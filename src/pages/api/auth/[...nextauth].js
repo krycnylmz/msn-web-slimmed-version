@@ -3,8 +3,7 @@ import Providers from 'next-auth/providers';
 import connectToDatabase from '../../../lib/mongodb';
 import User from '../../../models/User';
 
-import GitHubProvider from 'next-auth/providers/github';
-
+import GoogleProvider from "next-auth/providers/google"
 export default NextAuth({
   providers: [
     Google({
