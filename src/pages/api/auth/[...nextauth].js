@@ -3,13 +3,16 @@ import Providers from 'next-auth/providers';
 import connectToDatabase from '../../../lib/mongodb';
 import User from '../../../models/User';
 
+import GitHubProvider from 'next-auth/providers/github';
+
 export default NextAuth({
   providers: [
-    Providers.Google({
+    Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  
   database: process.env.MONGODB_URI,
   callbacks: {
     async signIn(user, account, profile) {
