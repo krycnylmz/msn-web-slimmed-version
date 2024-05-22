@@ -95,7 +95,7 @@ export default function Home() {
         <div className="w-full sm:w-1/2">
           <Slider slides={sliderContents} />
         </div>
-        <div className="w-full sm:w-1/2 bg-red-600">denene</div>
+        <div className="w-full sm:w-1/2 bg-red-600">koray</div>
       </div>
     </div>
   );
