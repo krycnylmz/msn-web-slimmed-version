@@ -90,12 +90,12 @@ export default function Home() {
           </li>
         </ul>
       </div>
-      <div className="w-full flex flex-row bg-lime-400 gap-4">
+      <div className="w-full flex flex-row flex-wrap bg-lime-400 gap-4">
         {/* slider */}
         <div className="w-full sm:w-1/2">
           <Slider slides={sliderContents} />
         </div>
-        <div className="w-full sm:w-1/2 bg-red-600">koray</div>
+        <div className="w-full sm:w-1/2 bg-red-600">koray 2.0</div>
       </div>
     </div>
   );
