@@ -1,0 +1,36 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      run: echo "${{ secrets.PAT }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: msn-news-portal.docker.io/msn-news-portal-image:latest
+
+    - name: Azure WebApp Deploy
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'msn-news'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: 'msn-news-portal.docker.io/msn-news-portal-image:latest'
+        env: 
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
