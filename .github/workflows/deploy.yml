@@ -12,13 +12,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
     - name: Login to DockerHub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -36,5 +34,3 @@ jobs:
         app-name: 'msn-news'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         images: 'msn-news-portal.docker.io/msn-news-portal-image:latest'
-        env: 
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
