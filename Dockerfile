@@ -1,29 +1,23 @@
-# Install dependencies only when needed
-FROM node:16-alpine AS deps
+# Base image
+FROM node:18
+
+# Set working directory
 WORKDIR /app
-COPY package.json package-lock.json ./
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Rebuild the source code only when needed
-FROM node:16-alpine AS builder
-WORKDIR /app
+# Copy all files
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
+
+# Build the project
 RUN npm run build
 
-# Production image, copy all the files and run next
-FROM node:16-alpine AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-
-# You only need to copy next.config.js if you are NOT using the default configuration
-# COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
+# Expose the port
 EXPOSE 3000
 
+# Start the application
 CMD ["npm", "start"]
