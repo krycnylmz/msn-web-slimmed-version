@@ -11,6 +11,7 @@ const UserSchema = new Schema({
   city: { type: String, required: true },
   likedNews: [{ type: Schema.Types.ObjectId, ref: 'News' }],
   interestedCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+  notifications: { type: Boolean, default: true }
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

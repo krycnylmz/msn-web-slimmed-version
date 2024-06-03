@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import {Image} from 'next/image';
 const NewsRecommendations = ({ user }) => {
   const [news, setNews] = useState([]);
 
@@ -25,7 +25,7 @@ const NewsRecommendations = ({ user }) => {
         <div key={n._id}>
           <h3>{n.title}</h3>
           <p>{n.content}</p>
-          <img src={n.imageUrl} alt={n.title} />
+          <Image src={n.imageUrl} alt={n.title} />
           <p><strong>Category:</strong> {n.category.name}</p>
         </div>
       ))}
