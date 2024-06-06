@@ -14,18 +14,35 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 import useUserStore from "@/store/useUserStore";
 import apiService from "@/lib/apiService";
 
+
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout({ children }) {
+
   const { token, setToken, clearToken } = useUserStore((state) => ({
     token: state.token,
     setToken: state.setToken,
     clearToken: state.clearToken,
+    user: state.user,
   }));
 
   const router = useRouter();
   const { i18n, t } = useTranslation();
 
+
+  const { user } = useUserStore((state) => ({
+    user: state.user,
+  }));
+
+
+  useEffect(() => {
+    console.log('User: thisssssssssssssss', user);
+  }, [user]);
+
+
+  console.log(`panda usssserrrr ${user.name}`);
   useEffect(() => {
     if (router.locale === 'en') {
       router.push('/en');
@@ -47,6 +64,7 @@ function RootLayout({ children }) {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
+        console.log(`panda decodedToken decodedToken decodedToken decodedToken ${token}`);
         setToken(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
@@ -152,16 +170,16 @@ function RootLayout({ children }) {
                   }
                 >
                   <div className="p-4">
+                    <div>
+                      <h3>{token.name || "Kullanıcı Adı"}</h3>
+                      <h3>{token.email || "Email"}</h3>
+                    </div>
                     <button
                       className="my-4 bg-red-600 text-white p-2 rounded-md "
                       onClick={() => handleLogout()}
                     >
                       {t("logout")}
                     </button>
-                    <div>
-                      <h3>{token.name || "Kullanıcı Adı"}</h3>
-                      <h3>{token.email || "Email"}</h3>
-                    </div>
                   </div>
                 </ButtonWithPopup>
               ) : (
