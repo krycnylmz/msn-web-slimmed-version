@@ -1,17 +1,15 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
-
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  surname: { type: String, required: true },
+  surname: { type: String, required: false }, // Zorunlu değil
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  country: { type: String, required: true },
-  city: { type: String, required: true },
-  likedNews: [{ type: Schema.Types.ObjectId, ref: 'News' }],
-  interestedCategories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
-  notifications: { type: Boolean, default: true }
-}, { timestamps: true });
+  password: { type: String, required: false }, // Zorunlu değil
+  country: { type: String, required: false }, // Zorunlu değil
+  city: { type: String, required: false }, // Zorunlu değil
+  likedNews: { type: [String], default: [] },
+  interestedCategories: { type: [String], default: [] },
+  notifications: { type: Boolean, default: true },
+});
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

@@ -1,31 +1,29 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { deleteCookie } from 'cookies-next';
+import { useRouter } from "next/navigation";
 
 const LogoutButton = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Token'ı çerezden kaldır
-      deleteCookie('token');
+  const handleLogout = async () => {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      // Kullanıcıyı login sayfasına yönlendir
-      router.push('/login');
-    }
-  }, [router]);
+    localStorage.removeItem("token");
+    router.push("/login");
+    console.dir(response);
+  };
 
-  return <button onClick={() => handleLogout()}>Logout</button>;
-};
-
-const handleLogout = async () => {
-  // Logout endpoint'ine istek gönder (isteğe bağlı)
-  await fetch('/api/auth/logout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  return (
+    <button
+      className="my-4 bg-red-600 text-white p-2 rounded-md"
+      onClick={handleLogout}
+    >
+      Logout
+    </button>
+  );
 };
 
 export default LogoutButton;

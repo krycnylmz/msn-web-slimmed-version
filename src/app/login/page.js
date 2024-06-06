@@ -3,35 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import GoogleSignIn from "../components/GoogleSignIn";
+import useUserStore from "../store/useUserStore";
+import apiService from "../../lib/apiService";
 
 export default function Login() {
   const [email, setEmail] = useState("demo@demo.com");
   const [password, setPassword] = useState("demo123");
   const router = useRouter();
+  const setToken = useUserStore((state) => state.setToken);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await apiService.login(email, password);
 
-    if (res.status === 200) {
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
-      router.push("/");
-    } else {
-      const data = await res.json();
-      alert(data.message);
+      if (response.status === 200) {
+        const data = response.data;
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        router.push("/");
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred. Please try again.");
     }
   };
 
   return (
-    <div className=" flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
         <input
           type="email"
@@ -50,12 +52,17 @@ export default function Login() {
           className="rounded-md p-2 pl-4 min-w-72"
         />
         <div className="flex justify-end">
-          <button type="submit" className="rounded-md p-2 bg-green-600 hover:bg-green-500 transition-all text-white">Login</button>
+          <button
+            type="submit"
+            className="rounded-md p-2 bg-green-600 hover:bg-green-500 transition-all text-white"
+          >
+            Login
+          </button>
         </div>
       </form>
       <span className="text-xs text-gray-700 my-3">Ya da</span>
       <div className="my-4">
-      <GoogleSignIn />
+        <GoogleSignIn />
       </div>
     </div>
   );

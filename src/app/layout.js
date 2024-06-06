@@ -1,25 +1,31 @@
-// components/RootLayout.js
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import "./globals.css";
 import { metadata } from "./config/metadata";
 import { appWithTranslation, useTranslation } from "next-i18next";
 import nextI18nextConfig from "../../next-i18next.config";
 
 import ButtonWithPopup from "@/components/ButtonWithPopup";
-import LogoutButton from "@/components/LogoutButton";
 import DropdownMenu from "@/components/DropdownMenu";
 import GoogleSignIn from "@/components/GoogleSignIn";
+import useUserStore from "@/store/useUserStore";
+import apiService from "@/lib/apiService";
+
 const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout({ children }) {
-  const [user, setUser] = useState(null);
+  const { token, setToken, clearToken } = useUserStore((state) => ({
+    token: state.token,
+    setToken: state.setToken,
+    clearToken: state.clearToken,
+  }));
 
   const router = useRouter();
   const { i18n, t } = useTranslation();
+
   useEffect(() => {
     if (router.locale === 'en') {
       router.push('/en');
@@ -27,7 +33,6 @@ function RootLayout({ children }) {
       router.push('/tr');
     }
   }, [router]);
-
 
   const [selectedLanguage, setSelectedLanguage] = useState("Dil seçin");
   const languages = ["tr", "en"];
@@ -42,31 +47,34 @@ function RootLayout({ children }) {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        setUser(decodedToken);
+        setToken(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
       }
     }
-  }, []);
+  }, [setToken]);
 
   const handleLogin = () => {
     router.push("/login");
   };
+
   const handleRegister = () => {
     router.push("/register");
   };
 
   const handleLogout = async () => {
-    const response = await fetch("/api/auth/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    localStorage.removeItem("token");
-    router.push("/login");
-    console.dir(response);
+    try {
+      const response = await apiService.logout();
+      if (response.status === 200) {
+        localStorage.removeItem("token");
+        clearToken(); // Kullanıcı durumunu güncelleyerek yeniden render edilmesini sağlıyoruz
+        router.push("/login");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -122,17 +130,17 @@ function RootLayout({ children }) {
             </div>
 
             <div className="flex flex-row gap-2 items-center">
-              {user ? (
+              {token ? (
                 <ButtonWithPopup
                   button={
-                    <button className="">
+                    <button className="bg-lime-500 rounded-full p-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-6"
+                        className="size-6 text-white"
                       >
                         <path
                           strokeLinecap="round"
@@ -151,8 +159,8 @@ function RootLayout({ children }) {
                       {t("logout")}
                     </button>
                     <div>
-                      <h3>{user.name || "Kullanıcı Adı"}</h3>
-                      <h3>{user.email || "Email"}</h3>
+                      <h3>{token.name || "Kullanıcı Adı"}</h3>
+                      <h3>{token.email || "Email"}</h3>
                     </div>
                   </div>
                 </ButtonWithPopup>
