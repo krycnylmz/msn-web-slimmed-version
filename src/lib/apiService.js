@@ -6,6 +6,7 @@ const apiService = {
   },
   logout: () => axios.post("/api/auth/logout"),
   // Diğer API çağrıları burada tanımlanabilir
+  getUserInformations: ()=> axios.post(),
 };
 
 export default apiService;

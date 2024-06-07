@@ -14,14 +14,10 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 import useUserStore from "@/store/useUserStore";
 import apiService from "@/lib/apiService";
 
-
-
-
 const inter = Inter({ subsets: ["latin"] });
 
 function RootLayout({ children }) {
-
-  const { token, setToken, clearToken } = useUserStore((state) => ({
+  const { token, setToken, clearToken, user } = useUserStore((state) => ({
     token: state.token,
     setToken: state.setToken,
     clearToken: state.clearToken,
@@ -31,23 +27,11 @@ function RootLayout({ children }) {
   const router = useRouter();
   const { i18n, t } = useTranslation();
 
-
-  const { user } = useUserStore((state) => ({
-    user: state.user,
-  }));
-
-
   useEffect(() => {
-    console.log('User: thisssssssssssssss', user);
-  }, [user]);
-
-
-  console.log(`panda usssserrrr ${user.name}`);
-  useEffect(() => {
-    if (router.locale === 'en') {
-      router.push('/en');
+    if (router.locale === "en") {
+      router.push("/en");
     } else {
-      router.push('/tr');
+      router.push("/tr");
     }
   }, [router]);
 
@@ -64,13 +48,16 @@ function RootLayout({ children }) {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        console.log(`panda decodedToken decodedToken decodedToken decodedToken ${token}`);
         setToken(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
       }
     }
   }, [setToken]);
+
+  useEffect(() => {
+    console.log("User information:", user);
+  }, [user]);
 
   const handleLogin = () => {
     router.push("/login");
@@ -85,7 +72,7 @@ function RootLayout({ children }) {
       const response = await apiService.logout();
       if (response.status === 200) {
         localStorage.removeItem("token");
-        clearToken(); // Kullanıcı durumunu güncelleyerek yeniden render edilmesini sağlıyoruz
+        clearToken();
         router.push("/login");
       } else {
         console.error("Logout failed");
