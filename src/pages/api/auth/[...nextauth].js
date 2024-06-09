@@ -1,7 +1,10 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import connectToDatabase from "../../../lib/mongodb";
+import CredentialsProvider from "next-auth/providers/credentials";
+import dbConnect from "../../../lib/mongodb";
 import User from "../../../models/User";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export default NextAuth({
   secret: process.env.JWT_SECRET,
@@ -9,13 +12,43 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorizationUrl:
-        "https://accounts.google.com/o/oauth2/auth?response_type=code&prompt=consent&access_type=offline",
+      authorizationUrl: "https://accounts.google.com/o/oauth2/auth?response_type=code&prompt=consent&access_type=offline",
+    }),
+    CredentialsProvider({
+      name: 'credentials',
+      async authorize(credentials) {
+        await dbConnect();
+
+        const { email, password } = credentials;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+          throw new Error('Invalid credentials');
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          throw new Error('Invalid credentials');
+        }
+
+        const token = jwt.sign(
+          { userId: user._id, name: user.name, email: user.email },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+        );
+
+        return {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          token,
+        };
+      },
     }),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      await connectToDatabase();
+      await dbConnect();
 
       const existingUser = await User.findOne({ email: user.email });
       if (!existingUser) {
@@ -38,7 +71,7 @@ export default NextAuth({
       return true;
     },
     async session({ session, user, token }) {
-      await connectToDatabase();
+      await dbConnect();
       const dbUser = await User.findOne({ email: session.user.email });
       if (dbUser) {
         session.user = {
@@ -47,27 +80,20 @@ export default NextAuth({
           name: dbUser.name,
           surname: dbUser.surname,
           country: dbUser.country,
+          picture:dbUser.profileImage,
           city: dbUser.city,
           likedNews: dbUser.likedNews,
           interestedCategories: dbUser.interestedCategories,
           notifications: dbUser.notifications,
         };
       }
-      // Session token'ı loglamak
-      console.log("Session token:", token);
-
-      // Token bilgilerini session'a eklemek
       session.token = token;
-
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        user = user;
       }
-      // JWT token'ı loglamak
-      console.log("JWT token-:", token);
       return token;
     },
   },

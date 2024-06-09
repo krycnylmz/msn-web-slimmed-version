@@ -3,36 +3,34 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import GoogleSignIn from "../components/GoogleSignIn";
+import { signIn } from "next-auth/react";
 import useUserStore from "../store/useUserStore";
-import apiService from "../../lib/apiService";
 
 export default function Login() {
   const [email, setEmail] = useState("demo@demo.com");
   const [password, setPassword] = useState("demo123");
+  const [error, setError] = useState("");
+  
   const router = useRouter();
   const { setToken, setUser } = useUserStore((state) => ({
     setToken: state.setToken,
     setUser: state.setUser,
   }));
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await apiService.login(email, password);
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-      setToken(token);
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
 
-      // Kullanıcı bilgisini güncellemek için custom event tetikleyin
-      window.dispatchEvent(new Event("userUpdated"));
-
-      router.push("/"); // Login sonrası ana sayfaya yönlendirin
-    } catch (error) {
-      console.error("Login failed", error);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      router.push("/");
     }
   };
-
 
   return (
     <div className="flex flex-col justify-center items-center">

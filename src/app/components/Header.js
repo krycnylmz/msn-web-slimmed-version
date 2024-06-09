@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import ButtonWithPopup from "@/components/ButtonWithPopup";
 import DropdownMenu from "@/components/DropdownMenu";
 import GoogleSignIn from "@/components/GoogleSignIn";
@@ -17,13 +18,8 @@ import NotificationIcon from "@/components/icons/NotificationIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
 
 const Header = () => {
-  const { token, setToken, user } = useUserStore((state) => ({
-    token: state.token,
-    setToken: state.setToken,
-    user: state.user,
-  }));
 
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
 
   const router = useRouter();
   const { i18n, t } = useTranslation();
@@ -44,17 +40,6 @@ const Header = () => {
     i18n.changeLanguage(language);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setToken(token);
-    }
-  }, [setToken]);
-
-  useEffect(() => {
-    console.log("User information:", user);
-  }, [user]);
-
   const handleLogin = () => {
     router.push("/login");
   };
@@ -63,9 +48,8 @@ const Header = () => {
     router.push("/register");
   };
 
-
-  if (status === "authenticated") {
-    return <p>Signed in as {session.user.email}</p>
+  if (status === "loading") {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -90,18 +74,30 @@ const Header = () => {
         </div>
 
         <div className="flex flex-row gap-2 items-center">
-          {user ? (
+          {session && session.user ? (
             <ButtonWithPopup
               button={
-                <button className="bg-lime-500 rounded-full p-2">
-                  <UserIcon />
-                </button>
+                session.user.image ? (
+                  <button className="bg-lime-500 rounded-full p-2 overflow-hidden">
+                    <Image
+                      src={session.user.image} // session.user.picture yerine session.user.image kullanılıyor
+                      alt="User Profile Image"
+                      width={30} // Genişlik belirleyin
+                      height={30} // Yükseklik belirleyin
+                      className="object-cover w-full rounded-full"
+                    />
+                  </button>
+                ) : (
+                  <button className="bg-lime-500 rounded-full p-2 overflow-hidden">
+                    <UserIcon />
+                  </button>
+                )
               }
             >
               <div className="p-4">
                 <div>
-                  <h3>{user.name || "Kullanıcı Adı"}</h3>
-                  <h3>{user.email || "Email"}</h3>
+                  <h3>{session?.user?.name || "Kullanıcı Adı"}</h3>
+                  <h3>{session?.user?.email || "Email"}</h3>
                 </div>
                 <LogoutButton />
               </div>

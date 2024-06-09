@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import useUserStore from "../store/useUserStore";
+import { useSession, signOut } from 'next-auth/react';
 
 const LogoutButton = () => {
   const router = useRouter();
@@ -10,12 +11,8 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // NextAuth signOut fonksiyonu ile oturumu kapat
+      await signOut({ redirect: false });
 
       localStorage.removeItem("token");
       setToken(null);  // Token'ı sıfırla

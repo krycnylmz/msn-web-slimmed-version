@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: false }, // Zorunlu değil
   country: { type: String, required: false }, // Zorunlu değil
   city: { type: String, required: false }, // Zorunlu değil
-  profileImage: { type: String, required: false, default:null }, // Zorunlu değil
+  profileImage: { type: String, default:"public/images/user_placeholder.webp" }, // Zorunlu değil
   likedNews: { type: [String], default: [] },
   interestedCategories: { type: [String], default: [] },
   notifications: { type: Boolean, default: true },
