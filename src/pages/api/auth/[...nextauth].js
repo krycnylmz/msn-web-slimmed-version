@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import connectToDatabase from "../../../lib/mongodb";
 import User from "../../../models/User";
-import useUserStore from "../../../app/store/useUserStore"; // Store'un doğru yolunu ayarlayın
 
 export default NextAuth({
   secret: process.env.JWT_SECRET,
@@ -17,20 +16,6 @@ export default NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       await connectToDatabase();
-
-      const setUser = useUserStore.getState().setUser;
-      const setToken = useUserStore.getState().setToken;
-
-      setUser({
-        name: user.name,
-        email: user.email,
-        profileImage: user.image,
-      });
-
-      setTimeout(() => {
-        const userState = useUserStore.getState().user;
-        console.log('User state after setTimeout:', userState);
-      }, 500);
 
       const existingUser = await User.findOne({ email: user.email });
       if (!existingUser) {
@@ -50,32 +35,39 @@ export default NextAuth({
         await newUser.save();
       }
 
-      setToken(account.accessToken);
-
       return true;
     },
-    async session({ session, token }) {
+    async session({ session, user, token }) {
       await connectToDatabase();
-      const user = await User.findOne({ email: session.user.email });
-      if (user) {
+      const dbUser = await User.findOne({ email: session.user.email });
+      if (dbUser) {
         session.user = {
           ...session.user,
-          id: user._id,
-          name: user.name,
-          surname: user.surname,
-          country: user.country,
-          city: user.city,
-          likedNews: user.likedNews,
-          interestedCategories: user.interestedCategories,
-          notifications: user.notifications,
+          id: dbUser._id,
+          name: dbUser.name,
+          surname: dbUser.surname,
+          country: dbUser.country,
+          city: dbUser.city,
+          likedNews: dbUser.likedNews,
+          interestedCategories: dbUser.interestedCategories,
+          notifications: dbUser.notifications,
         };
       }
+      // Session token'ı loglamak
+      console.log("Session token:", token);
+
+      // Token bilgilerini session'a eklemek
+      session.token = token;
+
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        user = user;
       }
+      // JWT token'ı loglamak
+      console.log("JWT token-:", token);
       return token;
     },
   },

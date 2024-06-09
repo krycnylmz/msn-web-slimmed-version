@@ -1,16 +1,19 @@
-import {create} from 'zustand';
+import { create } from "zustand";
 
-const useUserStore = create(set => ({
-  user: {
-    name: '',
-    email: '',
-    profileImage: ''
+import { jwtDecode } from "jwt-decode";
+const useUserStore = create((set) => ({
+  token: null,
+  user: null,
+  setToken: (token) => {
+    set({ token });
+    if (token) {
+      const decodedUser = jwtDecode(token);
+      set({ user: decodedUser });
+    } else {
+      set({ user: null });
+    }
   },
-  setUser: (newUser) => set({ user: newUser }),
-  setToken: (token) => set({ token: token })
+  setUser: (user) => set({ user }),
 }));
 
 export default useUserStore;
-
-
-

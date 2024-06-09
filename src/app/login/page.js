@@ -10,31 +10,33 @@ export default function Login() {
   const [email, setEmail] = useState("demo@demo.com");
   const [password, setPassword] = useState("demo123");
   const router = useRouter();
-  const setToken = useUserStore((state) => state.setToken);
+  const { setToken, setUser } = useUserStore((state) => ({
+    setToken: state.setToken,
+    setUser: state.setUser,
+  }));
 
-  const handleLogin = async (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await apiService.login(email, password);
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      setToken(token);
 
-      if (response.status === 200) {
-        const data = response.data;
-        setToken(data.token);
-        localStorage.setItem("token", data.token);
-        router.push("/");
-      } else {
-        alert("Login failed");
-      }
+      // Kullanıcı bilgisini güncellemek için custom event tetikleyin
+      window.dispatchEvent(new Event("userUpdated"));
+
+      router.push("/"); // Login sonrası ana sayfaya yönlendirin
     } catch (error) {
-      console.error("Login error:", error);
-      alert("An error occurred. Please try again.");
+      console.error("Login failed", error);
     }
   };
 
+
   return (
     <div className="flex flex-col justify-center items-center">
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="email"
           value={email}

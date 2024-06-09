@@ -5,6 +5,7 @@ import Slider from "@/components/Slider";
 import CardMd from "@/components/CardMd";
 import { useTranslation } from 'next-i18next';
 
+
 export default function Home() {
   const [sliderNews, setSliderNews] = useState([]);
   const [newsCategories, setNewsCategories] = useState([]);
