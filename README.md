@@ -60,12 +60,14 @@ To set up and run the project locally:
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/krycnylmz/msn-web-slimmed-version.git
+   cd msn-web-slimmed-version
+  ```
 
 2. Install dependencies:
+  ```
   npm install
-
+  ```
 3. Create a .env file and add the necessary environment variables:
   ```
   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
@@ -77,6 +79,6 @@ To set up and run the project locally:
 
 4. Run the development server:
 
-```
-npm run dev
-```
+  ```
+  npm run dev
+  ```
