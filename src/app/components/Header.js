@@ -73,7 +73,7 @@ const Header = () => {
         <div className="flex-grow flex flex-row gap-0 max-w-screen-sm mx-4">
           <input
             type="text"
-            placeholder={t("searchPlaceholder")}
+            placeholder="search"
             className="w-full p-2 border border-gray-300 rounded-l-md"
           />
           <button className="bg-blue-500 px-5 rounded-r-md">
