@@ -4,16 +4,17 @@
 
 
 
-[Presentation video is here](https://drive.google.com/file/d/1-pch_MZ9eC-PXzO-oYTXdtSbrniysve6/view?usp=sharing)
+[Presentation video is here youtube](https://youtu.be/MP5Jax3i90A)
 
 
-## Tech
+## Tech Stack
 1. Google Cloud
 2. Next.js
 3. Next Auth (google signup)
 4. Zustand (state managment tool)
 5. MongoDb (For database)
 6. Tailwind css
+7. git for version control
 
 ## Overview
 
