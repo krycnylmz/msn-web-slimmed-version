@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { Switch } from "@headlessui/react";
 import ButtonWithPopup from "@/components/ButtonWithPopup";
 import DropdownMenu from "@/components/DropdownMenu";
 import GoogleSignIn from "@/components/GoogleSignIn";
@@ -22,15 +21,6 @@ const Header = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { i18n, t } = useTranslation("common");
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?query=${searchQuery}`);
-    }
-  };
 
   useEffect(() => {
     i18n.changeLanguage(router.locale);
@@ -52,6 +42,20 @@ const Header = () => {
     router.push("/register");
   };
 
+  const handleNotificationChange = async (enabled) => {
+    // Bildirim ayarını güncellemek için API çağrısı yap
+    await fetch("/api/update-notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notifications: enabled }),
+    });
+
+    // Session bilgilerini güncelle
+    window.location.reload();
+  };
+
   if (status === "loading") {
     return <div>Loading...</div>;
   }
@@ -66,18 +70,16 @@ const Header = () => {
           </div>
         </a>
 
-        <form onSubmit={handleSearch} className="flex-grow flex flex-row gap-0 max-w-screen-sm mx-4">
+        <div className="flex-grow flex flex-row gap-0 max-w-screen-sm mx-4">
           <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("searchPlaceholder")}
             className="w-full p-2 border border-gray-300 rounded-l-md"
           />
-          <button type="submit" className="bg-blue-500 px-5 rounded-r-md">
+          <button className="bg-blue-500 px-5 rounded-r-md">
             <SearchIcon />
           </button>
-        </form>
+        </div>
 
         <div className="flex flex-row gap-2 items-center">
           {session && session.user ? (
@@ -106,19 +108,8 @@ const Header = () => {
                   <h3>{session?.user?.email || "Email"}</h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>{t("notifications")}</span>
-                  <Switch
-                    checked={session.user.notifications}
-                    onChange={(enabled) => handleNotificationChange(enabled)}
-                    className={`${session.user.notifications ? "bg-blue-600" : "bg-gray-200"} relative inline-flex h-6 w-11 items-center rounded-full`}
-                  >
-                    <span className="sr-only">Enable notifications</span>
-                    <span
-                      className={`${
-                        session.user.notifications ? "translate-x-6" : "translate-x-1"
-                      } inline-block h-4 w-4 transform bg-white rounded-full transition-transform`}
-                    />
-                  </Switch>
+                  <span>{t("enableNotifications")}</span>
+
                 </div>
                 <LogoutButton />
               </div>
@@ -168,18 +159,38 @@ const Header = () => {
                 <h5 className="text-sm font-bold">{t("notifications")}</h5>
                 <div className="flex items-center gap-2">
                   <span>{t("enableNotifications")}</span>
-                  <Switch
-                    checked={session.user.notifications}
-                    onChange={(enabled) => handleNotificationChange(enabled)}
-                    className={`${session.user.notifications ? "bg-blue-600" : "bg-gray-200"} relative inline-flex h-6 w-11 items-center rounded-full`}
-                  >
-                    <span className="sr-only">Enable notifications</span>
-                    <span
-                      className={`${
-                        session.user.notifications ? "translate-x-6" : "translate-x-1"
-                      } inline-block h-4 w-4 transform bg-white rounded-full transition-transform`}
-                    />
-                  </Switch>
+                </div>
+              </div>
+              <div className=" flex flex-col">
+                <div className="p-4 flex flex-col border-b group cursor-pointer ">
+                  <span className="text-xs text-slate-500">{t("topNews")}</span>
+                  <h4 className="group-hover:underline">
+                    Erken Seçim istemeyen Özel&apos;i haklı çıkaran anket -
+                    Haberler.com
+                  </h4>
+                  <span className="text-xs text-slate-500">
+                    Haberler.com - 1 sa. önce
+                  </span>
+                </div>
+                <div className="p-4 flex flex-col border-b group cursor-pointer ">
+                  <span className="text-xs text-slate-500">{t("topNews")}</span>
+                  <h4 className="group-hover:underline">
+                    Erken Seçim istemeyen Özel&apos;i haklı çıkaran anket -
+                    Haberler.com
+                  </h4>
+                  <span className="text-xs text-slate-500">
+                    Haberler.com - 1 sa. önce
+                  </span>
+                </div>
+                <div className="p-4 flex flex-col border-b group cursor-pointer ">
+                  <span className="text-xs text-slate-500">{t("topNews")}</span>
+                  <h4 className="group-hover:underline">
+                    Erken Seçim istemeyen Özel&apos;i haklı çıkaran anket -
+                    Haberler.com
+                  </h4>
+                  <span className="text-xs text-slate-500">
+                    Haberler.com - 1 sa. önce
+                  </span>
                 </div>
               </div>
             </div>

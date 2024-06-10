@@ -38,29 +38,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const handleNotificationChange = async (enabled) => {
-    setNotificationsEnabled(enabled);
 
-    // Veritabanını güncelle
-    await fetch("/api/auth/updateNotifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: session.user.email,
-        notifications: enabled,
-      }),
-    });
-
-    // Session'ı güncelle
-    const updatedSession = {
-      ...session,
-      user: { ...session.user, notifications: enabled },
-    };
-    const event = new CustomEvent("userUpdated", { detail: updatedSession });
-    window.dispatchEvent(event);
-  };
 
   if (loading) {
     return <p>Loading...</p>;
