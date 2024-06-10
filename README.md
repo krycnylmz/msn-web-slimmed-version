@@ -1,20 +1,25 @@
 # MSN Web Application
 
+## I deployed and setted environments correctly but it runs too slow so it cant load datas. I could not solve it for free.
 [Demo is here](https://msn-web-slimmed-version-ccltj3r3na-uc.a.run.app)
-
 
 
 [Presentation video is here youtube](https://youtu.be/MP5Jax3i90A)
 
 
+## Requirements
+![requirements](./public/requirements_and_tasks.png)
+
+
 ## Tech Stack
 1. Google Cloud
-2. Next.js
-3. Next Auth (google signup)
-4. Zustand (state managment tool)
-5. MongoDb (For database)
-6. Tailwind css
-7. git for version control
+2. Docker (It's also importand for continuously deployment) 
+3. Next.js
+4. Next Auth (google signup)
+5. Zustand (state managment tool)
+6. MongoDb (For database)
+7. Tailwind css
+8. git for version control
 
 ## Overview
 
