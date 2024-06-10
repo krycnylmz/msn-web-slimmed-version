@@ -59,7 +59,7 @@ The primary data model includes the following entities:
 To set up and run the project locally:
 
 1. Clone the repository:
-   ```sh
+   ```
    git clone https://github.com/krycnylmz/msn-web-slimmed-version.git
    cd msn-web-slimmed-version
   ```
@@ -68,6 +68,7 @@ To set up and run the project locally:
   ```
   npm install
   ```
+
 3. Create a .env file and add the necessary environment variables:
 
   ```
