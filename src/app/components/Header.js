@@ -18,21 +18,16 @@ import NotificationIcon from "@/components/icons/NotificationIcon";
 import SettingsIcon from "@/components/icons/SettingsIcon";
 
 const Header = () => {
-
   const { data: session, status } = useSession();
-
   const router = useRouter();
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation("common");
+
 
   useEffect(() => {
-    if (router.locale === "en") {
-      router.push("/en");
-    } else {
-      router.push("/tr");
-    }
-  }, [router]);
+    i18n.changeLanguage(router.locale);
+  }, [router.locale, i18n]);
 
-  const [selectedLanguage, setSelectedLanguage] = useState("Dil seçin");
+  const [selectedLanguage, setSelectedLanguage] = useState("tr");
   const languages = ["tr", "en"];
 
   const handleSelectLanguage = (language) => {

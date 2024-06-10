@@ -1,4 +1,10 @@
 {
+  "hello": "Merhaba",
   "welcome": "Hoşgeldiniz",
-  "hello": "Merhaba"
+  "searchPlaceholder": "Ara...",
+  "login": "Giriş Yap",
+  "register": "Kayıt Ol",
+  "notifications": "Bildirimler",
+  "settings": "Ayarlar",
+  "topNews": "En Çok Okunan Haberler"
 }

@@ -2,14 +2,12 @@
 import { Inter } from "next/font/google";
 import { metadata } from "@/app/config/metadata";
 import Header from "@/components/Header";
-import { appWithTranslation } from "next-i18next";
-import nextI18nextConfig from "../../../next-i18next.config";
 
 const inter = Inter({ subsets: ["latin"] });
 
 function MainLayout({ children }) {
   return (
-    <html lang="en" className="relative h-full">
+    <html lang="tr" className="relative h-full">
       <head>
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
@@ -22,4 +20,4 @@ function MainLayout({ children }) {
   );
 }
 
-export default appWithTranslation(MainLayout, nextI18nextConfig);
+export default MainLayout;

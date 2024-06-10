@@ -1,4 +1,3 @@
-// src/app/register/page.js
 "use client";
 
 import { useState } from "react";
@@ -22,6 +21,11 @@ export default function Register() {
       return;
     }
 
+    if (!isValidPassword(password)) {
+      alert("Password must be at least 8 characters long, contain at least one digit, and one non-alphabetic character.");
+      return;
+    }
+
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -36,6 +40,11 @@ export default function Register() {
       const data = await res.json();
       alert(data.message);
     }
+  };
+
+  const isValidPassword = (password) => {
+    const passwordRegex = /^(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return passwordRegex.test(password);
   };
 
   return (

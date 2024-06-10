@@ -1,4 +1,10 @@
 {
-  "welcome": "WelcomeEn",
-  "hello": "Hello"
+  "hello": "Hello",
+  "welcome": "Welcome",
+  "searchPlaceholder": "Search...",
+  "login": "Login",
+  "register": "Register",
+  "notifications": "Notifications",
+  "settings": "Settings",
+  "topNews": "Top News"
 }
