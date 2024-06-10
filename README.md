@@ -1,5 +1,20 @@
 # MSN Web Application
 
+[Demo is here](https://msn-web-slimmed-version-ccltj3r3na-uc.a.run.app)
+
+
+
+[Presentation video is here](https://drive.google.com/file/d/1-pch_MZ9eC-PXzO-oYTXdtSbrniysve6/view?usp=sharing)
+
+
+## Tech
+1. Google Cloud
+2. Next.js
+3. Next Auth (google signup)
+4. Zustand (state managment tool)
+5. MongoDb (For database)
+6. Tailwind css
+
 ## Overview
 
 This project is a web application built using Next.js with the App Router, React, Tailwind CSS, and NextAuth.js for authentication. The application provides functionalities for user registration, login, search, and viewing news articles. It also supports multi-language localization and user notifications preferences.
