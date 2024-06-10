@@ -28,6 +28,13 @@ The primary data model includes the following entities:
 - `city`: String
 - `notifications`: Boolean (indicates whether the user wants notifications)
 
+### Category
+- `name`: String
+
+### Language
+- `name`: String
+- `code`: String
+
 ### News
 - `title`: String
 - `content`: String
@@ -59,9 +66,10 @@ The primary data model includes the following entities:
 To set up and run the project locally:
 
 1. Clone the repository:
-   ```
-   git clone https://github.com/krycnylmz/msn-web-slimmed-version.git
-   cd msn-web-slimmed-version
+
+  ```
+  git clone https://github.com/krycnylmz/msn-web-slimmed-version.git
+  cd msn-web-slimmed-version
   ```
 
 2. Install dependencies:
@@ -76,7 +84,6 @@ To set up and run the project locally:
   NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=your-google-client-secret
   JWT_SECRET=your-jwt-secret
   MONGODB_URI=your-mongodb-connection-string
-
   ```
 
 
