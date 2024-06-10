@@ -22,7 +22,6 @@ export default async function register(req, res) {
       surname,
       email,
       password: hashedPassword,
-      profileImage:"public/images/user_placeholder.webp",
       country,
       city
     });
