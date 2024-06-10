@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Slider from "@/components/Slider";
 import CardMd from "@/components/CardMd";
-import { useTranslation } from 'next-i18next';
-
+import { useTranslation } from "next-i18next";
 
 export default function Home() {
   const [sliderNews, setSliderNews] = useState([]);
   const [newsCategories, setNewsCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [weather, setWeather] = useState(null);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,19 +38,43 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const handleNotificationChange = async (enabled) => {
+    setNotificationsEnabled(enabled);
+
+    // Veritabanını güncelle
+    await fetch("/api/auth/updateNotifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: session.user.email,
+        notifications: enabled,
+      }),
+    });
+
+    // Session'ı güncelle
+    const updatedSession = {
+      ...session,
+      user: { ...session.user, notifications: enabled },
+    };
+    const event = new CustomEvent("userUpdated", { detail: updatedSession });
+    window.dispatchEvent(event);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
 
-
   return (
-    <div className=" ">
+    <div className=" px-4 sm:px-0 ">
       {/* slider-top-nav */}
       <div className="flex flex-row overflow-x-auto items-center gap-2 py-2">
         <div className="flex flex-row items-center gap-2">
           {weather ? (
             <span>
-              {weather.name} / {parseFloat((weather.main.temp - 273.15).toFixed(2))}°C
+              {weather.name} /{" "}
+              {parseFloat((weather.main.temp - 273.15).toFixed(2))}°C
             </span>
           ) : (
             "Weather data not available"
@@ -73,7 +95,7 @@ export default function Home() {
         </ul>
       </div>
 
-      <div className="w-full grid grid-cols-4 mt-4 gap-4">
+      <div className="w-full grid grid-cols-3 sm:grid-cols-4 mt-4 sm:gap-4">
         {/* slider */}
         <div className="col-span-4 sm:col-span-2">
           <Slider slides={sliderNews} />

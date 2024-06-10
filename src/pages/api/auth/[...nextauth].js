@@ -93,6 +93,7 @@ export default NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.notifications = user.notifications;
       }
       return token;
     },

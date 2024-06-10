@@ -26,7 +26,7 @@ const Slider = ({ slides }) => {
     return () => {
       clearInterval(interval); // Zamanlayıcıyı bileşen demonte edilirken temizlemek
     };
-  }, [currentIndex,nextSlide]);
+  }, [currentIndex, nextSlide]);
 
   if (!slides || slides.length === 0) {
     return <div className="text-center">No images available</div>;
@@ -34,21 +34,24 @@ const Slider = ({ slides }) => {
 
   return (
     <div className="relative mx-auto h-96 rounded-md overflow-hidden">
-      <div className="overflow-hidden group cursor-pointer">
-        <Image
-          src={slides[currentIndex]?.imageUrl}
-          alt={`slide-${currentIndex}`}
-          width={1920}
-          height={1080}
-          className="w-full h-96 object-cover object-center"
-        />
-        <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent bg-opacity-50 text-white p-4 w-full">
-          <Link href={`/news/${slides[currentIndex]?._id}`} className="text-lg font-bold group-hover:underline">
+      <Link
+        href={`/news/${slides[currentIndex]?._id}`}
+        className="text-lg font-bold group-hover:underline"
+      >
+        <div className="overflow-hidden group cursor-pointer">
+          <Image
+            src={slides[currentIndex]?.imageUrl}
+            alt={`slide-${currentIndex}`}
+            width={1920}
+            height={1080}
+            className="w-full h-96 object-cover object-center"
+          />
+          <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent bg-opacity-50 text-white p-4 w-full">
             {slides[currentIndex]?.title}
-          </Link>
-          <p className="text-sm">{slides[currentIndex]?.author}</p>
+            <p className="text-sm">{slides[currentIndex]?.author}</p>
+          </div>
         </div>
-      </div>
+      </Link>
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
         {slides.map((slide, index) => (
           <span
