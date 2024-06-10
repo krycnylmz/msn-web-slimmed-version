@@ -69,11 +69,13 @@ To set up and run the project locally:
   npm install
   ```
 3. Create a .env file and add the necessary environment variables:
+
   ```
   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
   NEXT_PUBLIC_GOOGLE_CLIENT_SECRET=your-google-client-secret
   JWT_SECRET=your-jwt-secret
   MONGODB_URI=your-mongodb-connection-string
+
   ```
 
 
